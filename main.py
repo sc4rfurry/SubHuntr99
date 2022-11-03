@@ -38,7 +38,7 @@ def banner():
     _info = """
         [cyan bold]Author[/cyan bold]:     [green bold]Sc4rfurry[/green bold]
         [cyan bold]version[/cyan bold]:    [green bold]0.1[/green bold]
-        [cyan bold]github[/cyan bold]:     [green bold]https://github.com/sc4rfurry[/green bold]
+        [cyan bold]github[/cyan bold]:     [green bold]https://github.com/sc4rfurry/SubHuntr99[/green bold]
     """
     console.print(f"\t\t\t[red bold]{banner}[/red bold]\n" + f"[gray37 bold]{_desc}[/gray37 bold]" + f"\t{_info}")
     console.print(f"[blue bold]=[/blue bold]" * 80 + "\n")
