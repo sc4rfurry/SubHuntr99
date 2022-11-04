@@ -3,3 +3,5 @@ requests
 bs4
 user-agent
 rich
+tld
+validators
