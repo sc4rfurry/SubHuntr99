@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 
-from time import sleep
 import requests
 from bs4 import BeautifulSoup
 from bs4.dammit import EncodingDetector
 from rich.console import Console
 from user_agent import generate_user_agent
+from time import sleep
+from os import getcwd, name as nm, path, makedirs
+
+
 
 console = Console()
-
+cwd = getcwd()
+get_os = str(nm)
 
 
 class bcolors:
@@ -38,7 +42,7 @@ def banner():
     _info = """
         [cyan bold]Author[/cyan bold]:     [green bold]Sc4rfurry[/green bold]
         [cyan bold]version[/cyan bold]:    [green bold]0.1[/green bold]
-        [cyan bold]github[/cyan bold]:     [green bold]https://github.com/sc4rfurry/SubHuntr99[/green bold]
+        [cyan bold]github[/cyan bold]:     [green bold]https://github.com/sc4rfurry[/green bold]
     """
     console.print(f"\t\t\t[red bold]{banner}[/red bold]\n" + f"[gray37 bold]{_desc}[/gray37 bold]" + f"\t{_info}")
     console.print(f"[blue bold]=[/blue bold]" * 80 + "\n")
@@ -55,6 +59,71 @@ def check_internet_conn():
         console.print(f"\t[yellow bold]*[/yellow bold] [red bold]Unable to connect to server: [cyan bold]{host}[/cyan bold][/red bold]")
         exit(1)
 
+
+def ioFunc(domain, urls):
+    global file_path
+    folder_name = str(domain)
+    subs = urls
+    filename =  "sub-domains.log"
+    if get_os == "nt":
+        wd = cwd + "\\" + "Output" + "\\" + f"{folder_name}" + "\\" 
+        try:
+            if path.exists(wd) and path.isdir(wd):
+                file_path = wd + filename
+                for url in subs:
+                    with open(file_path, "a+") as handler:
+                        handler.write(url + "\n")
+                return file_path
+            else:
+                try:
+                    makedirs(wd)
+                    file_path = wd + filename
+                    for url in subs:
+                        with open(file_path, "a+") as handler:
+                            handler.write(url + "\n")
+                    return file_path
+                except Exception as err:
+                    console.print(err)
+                    exit(1)
+                except KeyboardInterrupt as err:
+                    console.print(err)
+                    exit(1)
+        except Exception as err:
+            console.print(err)
+            exit(1)
+        except KeyboardInterrupt as err:
+            console.print(err)
+            exit(1)
+    else:
+        wd = cwd + "/" + "Output" + "/" + f"{folder_name}" + "/"
+        try:
+            if path.exists(wd) and path.isdir(wd):
+                file_path = wd + filename
+                for url in subs:
+                    with open(file_path, "a+") as handler:
+                        handler.write(url + "\n")
+                return file_path
+            else:
+                try:
+                    makedirs(wd)
+                    file_path = wd + filename
+                    for url in subs:
+                        with open(file_path, "a+") as handler:
+                            handler.write(url + "\n")
+                    return file_path
+                except Exception as err:
+                    console.print(err)
+                    exit(1)
+                except KeyboardInterrupt as err:
+                    console.print(err)
+                    exit(1)
+        except Exception as err:
+            console.print(err)
+            exit(1)
+        except KeyboardInterrupt as err:
+            console.print(err)
+            exit(1)
+    
 
 
 def getLatestResults(dm):
@@ -103,6 +172,8 @@ def getLatestResults(dm):
 
 
 def main():
+    global sub_domains
+    sub_domains = []
     _urls = []
     ua = generate_user_agent(os=('linux', 'win'))
     console.print(f"\t[white bold]*[/white bold] [steel_blue1 bold]Checking Connection[/steel_blue1 bold]....")
@@ -148,6 +219,12 @@ def main():
         for dom in _urls:
             dom = str(dom).replace('//', '')
             console.print(f"      [pale_turquoise1 bold]  └───>[/pale_turquoise1 bold]\t[yellow bold]  {dom}[/yellow bold]")
+            sub_domains.append(dom)
+        console.print(f"[blue bold]=[/blue bold]" * 80 + "\n")
+        console.print(f"\t[white bold]*[/white bold] [green bold]Saving Sub-Domains...[/green bold]\n")
+        ioFunc(str(user_input), sub_domains)
+        sleep(2)
+        console.print(f"\t[white bold]*[/white bold] [green bold]File Saved [dark_khaki bold]{file_path}[/dark_khaki bold]...![/green bold]\n")
     except Exception as err:
         console.print(err)
         exit(1)
