@@ -7,8 +7,8 @@ from rich.console import Console
 from user_agent import generate_user_agent
 from time import sleep
 from os import getcwd, name as nm, path, makedirs
-
-
+from tld import get_tld
+from validators import domain as vdm
 
 console = Console()
 cwd = getcwd()
@@ -57,6 +57,24 @@ def check_internet_conn():
         s.get(host, timeout=10)
     except Exception as err:
         console.print(f"\t[yellow bold]*[/yellow bold] [red bold]Unable to connect to server: [cyan bold]{host}[/cyan bold][/red bold]")
+        exit(1)
+
+
+def validateDomain(domain):
+    global vdom
+    console.print(f"\n\t[white bold]*[/white bold] [green bold]Validating Domain: [/green bold]{domain}...")
+    sleep(2)
+    if vdm(str(domain)):
+        if str(domain).startswith("http:") or str(domain).startswith("https:"):
+            vdom = get_tld(domain, as_object=True)
+            console.print(f"\t[white bold]*[/white bold] [green bold]Domain is Valid[/green bold]...")
+            return vdom
+        else:
+            console.print(f"\t[white bold]*[/white bold] [green bold]Domain is Valid[/green bold]...")
+            vdom = domain
+            return vdom
+    else:
+        console.print(f"\t[yellow bold]*[/yellow bold] [red bold]Invalid Domain Name(ex: example.com):[cyan bold]{domain}[/cyan bold][/red bold]")
         exit(1)
 
 
@@ -185,9 +203,10 @@ def main():
         exit(1)
     user_input = str(input(f"""\t{bcolors.FAIL}┌──({bcolors.OKGREEN}Domain{bcolors.ENDC}{bcolors.FAIL}){bcolors.ENDC}  
       {bcolors.FAIL}  └─~/>> {bcolors.ENDC}"""))
-    domain = user_input
-    getLatestResults(user_input)
-    console.print(f"\n\t[white bold]*[/white bold] [green bold]Scraping the Scan Timeline[/green bold]")
+    domain = str(user_input)
+    validateDomain(domain)
+    getLatestResults(vdom)
+    console.print(f"\t[white bold]*[/white bold] [green bold]Scraping the Scan Timeline[/green bold]")
     sleep(2)
     console.print(f"\t[white bold]*[/white bold] [green bold]Scan Timeline Results: [white bold]{len(urls)}[/white bold][/green bold]")
     sleep(1)
@@ -208,13 +227,16 @@ def main():
         html_encoding = EncodingDetector.find_declared_encoding(resp.content, is_html=True)
         encoding = html_encoding or http_encoding
         soup = BeautifulSoup(resp.content, 'html5lib', from_encoding=encoding)
-
         for link in soup.find_all('a', href=True):
             if f".{domain}" in str(link):
                 _domain = str(link['href'])
                 _urls.append(_domain)
-        console.print(f"\t[white bold]*[/white bold] [green bold]Fetched [dark_khaki bold]{len(_urls)}[/dark_khaki bold] Sub-Domains[/green bold]\n")
-        sleep(3)
+        if len(_urls) > 0:
+            console.print(f"\t[white bold]*[/white bold] [green bold]Fetched [dark_khaki bold]{len(_urls)}[/dark_khaki bold] Sub-Domains[/green bold]\n")
+            sleep(3)
+        else:
+            console.print(f"\t[yellow bold]*[/yellow bold] [red bold]No Sub-Domain Found for: [cyan bold]{domain}[/cyan bold][/red bold]")
+            exit(1)
         console.print(f"\t[pale_turquoise1 bold]┌──([/pale_turquoise1 bold][steel_blue1 bold]{str(user_input)}[/steel_blue1 bold][pale_turquoise1 bold])─([green bold]Sub-Domain[/green bold] ㉿ [dark_khaki bold]{len(_urls)}[/dark_khaki bold])[/pale_turquoise1 bold]")  
         for dom in _urls:
             dom = str(dom).replace('//', '')
@@ -224,7 +246,7 @@ def main():
         console.print(f"\t[white bold]*[/white bold] [green bold]Saving Sub-Domains...[/green bold]\n")
         ioFunc(str(user_input), sub_domains)
         sleep(2)
-        console.print(f"\t[white bold]*[/white bold] [green bold]File Saved [dark_khaki bold]{file_path}[/dark_khaki bold]...![/green bold]\n")
+        console.print(f"\t[white bold]*[/white bold] [green bold]File Saved: [dark_khaki bold]{file_path}[/dark_khaki bold]...![/green bold]\n")
     except Exception as err:
         console.print(err)
         exit(1)
