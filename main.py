@@ -66,7 +66,8 @@ def validateDomain(domain):
     sleep(2)
     if vdm(str(domain)):
         if str(domain).startswith("http:") or str(domain).startswith("https:"):
-            vdom = get_tld(domain, as_object=True)
+            _fld = get_tld(domain, as_object=True)
+            vdom = str(_fld.fld)
             console.print(f"\t[white bold]*[/white bold] [green bold]Domain is Valid[/green bold]...")
             return vdom
         else:
