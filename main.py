@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import requests
+import sys
+import os
 from bs4 import BeautifulSoup
 from bs4.dammit import EncodingDetector
 from rich.console import Console
@@ -199,8 +201,14 @@ def main():
     parser = argparse.ArgumentParser(description='SubHuntr99')
     parser.add_argument('-d', type=str, required=False, dest='domain', help = "Domain")
     parser.add_argument('-u', type=str, required=False, dest='useragent', help = "User-Agent")
+    parser.add_argument('-q', required=False, dest='quiet', help = "Quiet mode", action='store_true')
     args = parser.parse_args()
 
+    if (args.quiet):
+        sys.stdout = open(os.devnull, 'w')
+
+    banner()
+    
     ua = ""
     if (args.useragent):
         ua = args.useragent
@@ -276,7 +284,6 @@ def main():
 
 if __name__ == "__main__":
     try:
-        banner()
         main()
     except Exception as err:
         console.print(err)
