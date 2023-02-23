@@ -40,7 +40,7 @@ def banner():
 /____/\__,_/_.___/_/ /_/\__,_/_/ /_/\__/_/   /____//____/ 
     """
     _desc = """
-    Sub Domian Finder --> subdomainfinder.c99.nl
+    Sub Domain Finder --> subdomainfinder.c99.nl
     """
     _info = """
         [cyan bold]Author[/cyan bold]:     [green bold]Sc4rfurry[/green bold]
