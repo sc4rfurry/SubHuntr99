@@ -13,8 +13,8 @@ Hunting Sub-Domain(s) by scraping *subdomainfinder.c99.nl*.
   - [📚 Requirements](#-requirements)
   - [Installation](#installation)
     - [Usage](#usage)
-    - [Repo Info ](#repo-info-)
     - [Docker](#docker)
+    - [Repo Info ](#repo-info-)
   - [Contributing](#contributing)
   - [License](#license)
   - [Feedback](#feedback)
@@ -93,20 +93,10 @@ options:
   -d DOMAIN     Domain
   -u USERAGENT  User-Agent
 ```
-#
-
-
-
-</br>
-
-## Repo Info
-
-</br>
-<img src="https://i.ibb.co/TMJswzK/sub.png" alt="sub" border="0">
-
-#
 
 ## Docker
+</br>
+
 ```bash
 # Build the docker image
 docker build -t subhuntr99 .
@@ -118,9 +108,24 @@ docker run -it subhuntr99
 docker run -it subhuntr99 -d example.com
 ```
 
+#
+
+</br>
+
+## Repo Info
+
+</br>
+<img src="https://i.ibb.co/TMJswzK/sub.png" alt="sub" border="0">
+
+#
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Contributors
+> Special thanks to the following people who have contributed to this project:
+- [@cosad3s](https://github.com/cosad3s)
 
 Please make sure to update tests as appropriate.
 
