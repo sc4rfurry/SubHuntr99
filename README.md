@@ -3,6 +3,30 @@
 # SubHuntr99
 Hunting Sub-Domain(s) by scraping *subdomainfinder.c99.nl*.
 ##
+
+## Table of contents
+* [General info](#general-info)
+* [Github Info](#github-info)
+* [Technologies](#technologies)
+* [Usage/Examples](#usage/examples)
+* [Contributing](#contributing)
+* [Contributors](#contributors)
+* [License](#license)
+* [Feedback](#feedback)
+
+#
+
+# General info
+` SubHuntr99 ` is a python script that scrapes subdomains from *subdomainfinder.c99.nl* and saves them in a file. It also supports `Docker` for easy deployment.
+</br>
+
+  ##  Github Info :-
+</br>
+
+  <img src="https://i.ibb.co/F0RgV5R/sub.png" alt="sub" border="0">
+
+#
+
 ### 🔧 Technologies & Tools
 
 ![](https://img.shields.io/badge/OS-Linux-informational?style=flat-square&logo=kali-linux&logoColor=white&color=5194f0&bgcolor=110d17)
@@ -43,10 +67,26 @@ After that run the following commands:
 python3 main.py
 ```
 
+## Docker
+```bash
+# Build the docker image
+docker build -t subhuntr99 .
+
+# Run the docker image
+docker run -it subhuntr99
+
+# Run the docker image with a argument
+docker run -it subhuntr99 -d example.com
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+#
+## Contributors
+Special Thanks goes to :-
+- [@cosad3s](https://github.com/cosad3s)
+#
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
