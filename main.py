@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import requests
+import sys
+import os
 from bs4 import BeautifulSoup
 from bs4.dammit import EncodingDetector
 from rich.console import Console
@@ -9,6 +11,7 @@ from time import sleep
 from os import getcwd, name as nm, path, makedirs
 from tld import get_tld
 from validators import domain as vdm
+import argparse
 
 console = Console()
 cwd = getcwd()
@@ -37,7 +40,7 @@ def banner():
 /____/\__,_/_.___/_/ /_/\__,_/_/ /_/\__/_/   /____//____/ 
     """
     _desc = """
-    Sub Domian Finder --> subdomainfinder.c99.nl
+    Sub Domain Finder --> subdomainfinder.c99.nl
     """
     _info = """
         [cyan bold]Author[/cyan bold]:     [green bold]Sc4rfurry[/green bold]
@@ -194,7 +197,24 @@ def main():
     global sub_domains
     sub_domains = []
     _urls = []
-    ua = generate_user_agent(os=('linux', 'win'))
+    
+    parser = argparse.ArgumentParser(description='SubHuntr99')
+    parser.add_argument('-d', type=str, required=False, dest='domain', help = "Domain")
+    parser.add_argument('-u', type=str, required=False, dest='useragent', help = "User-Agent")
+    parser.add_argument('-q', required=False, dest='quiet', help = "Quiet mode", action='store_true')
+    args = parser.parse_args()
+
+    if (args.quiet):
+        sys.stdout = open(os.devnull, 'w')
+
+    banner()
+    
+    ua = ""
+    if (args.useragent):
+        ua = args.useragent
+    else:
+        ua = generate_user_agent(os=('linux', 'win'))
+
     console.print(f"\t[white bold]*[/white bold] [steel_blue1 bold]Checking Connection[/steel_blue1 bold]....")
     check_internet_conn()
     if check_internet_conn:
@@ -202,17 +222,21 @@ def main():
     else:
         console.print(f"\t[yellow bold]*[/yellow bold] [red bold]Unable to connect to server: [cyan bold]subdomainfinder.c99.nl[/cyan bold][/red bold]")
         exit(1)
-    user_input = str(input(f"""\t{bcolors.FAIL}┌──({bcolors.OKGREEN}Domain{bcolors.ENDC}{bcolors.FAIL}){bcolors.ENDC}  
-      {bcolors.FAIL}  └─~/>> {bcolors.ENDC}"""))
+
+        
+    user_input = ""
+    if (args.domain):
+        user_input = args.domain    
+    else:
+        user_input = str(input(f"""\t{bcolors.FAIL}┌──({bcolors.OKGREEN}Domain{bcolors.ENDC}{bcolors.FAIL}){bcolors.ENDC}  
+          {bcolors.FAIL}  └─~/>> {bcolors.ENDC}"""))
     domain = str(user_input)
     validateDomain(domain)
+    
     getLatestResults(vdom)
     console.print(f"\t[white bold]*[/white bold] [green bold]Scraping the Scan Timeline[/green bold]")
-    sleep(2)
     console.print(f"\t[white bold]*[/white bold] [green bold]Scan Timeline Results: [white bold]{len(urls)}[/white bold][/green bold]")
-    sleep(1)
     console.print(f"\t[white bold]*[/white bold] [green bold]Setting the latest Timeline: [/green bold][yellow bold]https:{top_t3n[0]}[/yellow bold]")
-    sleep(3)
     url = "https:" + top_t3n[0]
     s = requests.Session()
     s.headers.update({
@@ -247,7 +271,7 @@ def main():
         console.print(f"\t[white bold]*[/white bold] [green bold]Saving Sub-Domains...[/green bold]\n")
         ioFunc(str(user_input), sub_domains)
         sleep(2)
-        console.print(f"\t[white bold]*[/white bold] [green bold]File Saved: [dark_khaki bold]{file_path}[/dark_khaki bold]...![/green bold]\n")
+        console.print(f"\t[white bold]*[/white bold] [green bold]File Saved: [dark_khaki bold]{file_path}[/dark_khaki bold] ![/green bold]\n")
     except Exception as err:
         console.print(err)
         exit(1)
@@ -260,7 +284,6 @@ def main():
 
 if __name__ == "__main__":
     try:
-        banner()
         main()
     except Exception as err:
         console.print(err)
