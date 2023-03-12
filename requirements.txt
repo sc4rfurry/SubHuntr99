@@ -6,3 +6,4 @@ rich
 tld
 validators
 argparse
+requests_html

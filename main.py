@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
-
-import requests
-import sys
-import os
+# -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-from bs4.dammit import EncodingDetector
 from rich.console import Console
 from user_agent import generate_user_agent
 from time import sleep
@@ -12,14 +8,26 @@ from os import getcwd, name as nm, path, makedirs
 from tld import get_tld
 from validators import domain as vdm
 import argparse
-from contextlib import contextmanager
-from os import devnull as dnull
+from bs4.dammit import EncodingDetector
+from requests_html import AsyncHTMLSession
+from sys import exit, stdout as __sdt__
+from urllib3.exceptions import InsecureRequestWarning
+from random import choice
+import requests
+
+
+final = []
+platfprms = ["Windows", "Linux"]
+urls = []
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+asession = AsyncHTMLSession()
 
 
 # Global Variables
 console = Console()
 cwd = getcwd()
 get_os = str(nm)
+ua = generate_user_agent(os=("linux", "win"))
 _urls = []
 user_input = ""
 
@@ -59,15 +67,6 @@ else:
     UNDERLINE = bcolors.UNDERLINE
 
 
-@contextmanager
-def suppress_stdout():
-    with open(dnull, "w") as devnull:
-        old_stdout = sys.stdout
-        sys.stdout = devnull
-        try:
-            yield
-        finally:
-            sys.stdout = old_stdout
 
 
 def banner():
@@ -98,6 +97,35 @@ def check_internet_conn():
     try:
         host = "https://subdomainfinder.c99.nl"
         s = requests.Session()
+        s.headers.update(
+            {"user-agent": f"{ua}", "Accept-Encoding": "*", "Connection": "keep-alive"}
+        )
+        s.headers.update(
+            {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+            }
+        )
+        s.headers.update({"Accept-Language": "en-US,en;q=0.5"})
+        s.headers.update({"Accept-Encoding": "gzip, deflate, br"})
+        s.headers.update(
+            {
+                "sec-ch-ua": '"Chromium";v="88", "Google Chrome";v="88", ";Not A Brand";v="99"'
+            }
+        )
+        s.headers.update({"sec-ch-ua-mobile": "?0"})
+        s.headers.update({"sec-ch-ua-platform": f"{choice(platfprms)}"})
+        s.headers.update({"Upgrade-Insecure-Requests": "1"})
+        s.headers.update({"Cache-Control": "max-age=0"})
+        s.headers.update({"TE": "Trailers"})
+        s.headers.update({"Connection": "Keep-Alive"})
+        s.headers.update({"Referer": "https://google.com/"})
+        s.headers.update({"Host": "subdomainfinder.c99.nl"})
+        s.headers.update({"DNT": "1"})
+        s.headers.update({"Sec-Fetch-Dest": "document"})
+        s.headers.update({"Sec-Fetch-Mode": "navigate"})
+        s.headers.update({"Sec-Fetch-Site": "same-origin"})
+        s.headers.update({"Sec-Fetch-User": "?1"})
+        s.headers.update({"Sec-GPC": "1"})
         s.get(host, timeout=10)
     except Exception as err:
         console.print(
@@ -139,8 +167,7 @@ def ioFunc(domain, urls):
     subs = urls
     filename = "sub-domains.log"
     if get_os == "nt":
-        wd - path.join(cwd, "Output", folder_name)
-        wd = '"' + wd + '"'
+        wd = cwd + "\\" + "Output" + "\\" + f"{folder_name}" + "\\"
         try:
             if path.exists(wd) and path.isdir(wd):
                 file_path = wd + filename
@@ -199,55 +226,123 @@ def ioFunc(domain, urls):
             exit(1)
 
 
-def getLatestResults(dm):
-    global urls, top_t3n
-    urls = []
-    top_t3n = []
-    ua = generate_user_agent(os=("linux", "win"))
-    domain = str(dm)
-    url = f"https://subdomainfinder.c99.nl/search.php?domain={domain}"
+def getLatestResults(vdom):
+    global top_t3n, final
+    final = []
+    url = f"http://subdomainfinder.c99.nl/search.php?domain={vdom}"
     s = requests.Session()
     s.headers.update(
         {"user-agent": f"{ua}", "Accept-Encoding": "*", "Connection": "keep-alive"}
     )
-    try:
-        resp = s.get(url)
-        http_encoding = (
-            resp.encoding
-            if "charset" in resp.headers.get("content-type", "").lower()
-            else None
-        )
-        html_encoding = EncodingDetector.find_declared_encoding(
-            resp.content, is_html=True
-        )
-        encoding = html_encoding or http_encoding
-        soup = BeautifulSoup(resp.content, "html5lib", from_encoding=encoding)
-        for link in soup.find_all("a", href=True):
-            if f"/{domain}" in str(link):
-                domm = str(link["href"])
-                if domm not in urls:
-                    urls.append(domm)
-                else:
-                    pass
-    except Exception as err:
-        console.print(err)
-        exit(1)
-    except KeyboardInterrupt as err:
-        console.print(err)
-        exit(1)
+    s.headers.update(
+        {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+        }
+    )
+    s.headers.update({"Accept-Language": "en-US,en;q=0.5"})
+    s.headers.update({"Accept-Encoding": "gzip, deflate, br"})
+    s.headers.update(
+        {
+            "sec-ch-ua": '"Chromium";v="88", "Google Chrome";v="88", ";Not A Brand";v="99"'
+        }
+    )
+    s.headers.update({"sec-ch-ua-mobile": "?0"})
+    s.headers.update({"sec-ch-ua-platform": f"{choice(platfprms)}"})
+    s.headers.update({"Upgrade-Insecure-Requests": "1"})
+    s.headers.update({"Cache-Control": "max-age=0"})
+    s.headers.update({"TE": "Trailers"})
+    s.headers.update({"Connection": "Keep-Alive"})
+    s.headers.update({"Referer": "https://google.com/"})
+    s.headers.update({"Host": "subdomainfinder.c99.nl"})
+    s.headers.update({"DNT": "1"})
+    s.headers.update({"Sec-Fetch-Dest": "document"})
+    s.headers.update({"Sec-Fetch-Mode": "navigate"})
+    s.headers.update({"Sec-Fetch-Site": "same-origin"})
+    s.headers.update({"Sec-Fetch-User": "?1"})
+    s.headers.update({"Sec-GPC": "1"})
 
-    if len(urls) > 0:
-        if len(urls[0:10]) == 10:
-            top_t3n = urls[0:10]
+    # for header in s.headers:
+    #     print(header, s.headers[header])
+
+    r = s.get(url, verify=False, timeout=10, allow_redirects=False, proxies=None)
+    soup = BeautifulSoup(r.text, "html5lib")
+    for link in soup.find_all("a", href=True):
+        if "//" in str(link["href"]):
+            domain = str(link["href"]).replace("//", "")
+            if domain not in urls:
+                urls.append(domain)
         else:
-            top_t3n = urls
+            pass
+
+    s.close()
+    for url in urls:
+        if "https:api.c99.nl" in url:
+            continue
+        else:
+            final.append(url)
+
+    final = final[1:-1]
+
+    if len(final) > 0:
+        if len(final[0:10]) == 10:
+            top_t3n = final[0:10]
+        else:
+            top_t3n = final
     else:
         console.print(
             f"\n\t[yellow bold]*[/yellow bold] {len(urls)} Sub-Domain(s) Found Please Try Again..."
         )
         exit(1)
 
-    return top_t3n, urls
+    return top_t3n, final
+
+
+async def get_subs(vdom):
+    url = f"https://subdomainfinder.c99.nl/scans/2023-03-07/{vdom}"
+    r = await asession.get(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
+        },
+        timeout=10,
+    )
+    return r.html.links
+
+
+def run_it(vdom):
+    global subs
+    subs = []
+    urls = asession.run(get_subs(vdom))
+    urls = list(urls[0])
+    for url in urls:
+        if (
+            "https:" in url
+            or "http:" in url
+            or "whois" in url
+            or "api.c99.nl" in url
+            or "/geoip" in url
+            or "overview" in url
+            or "subdomainfinder" in url
+            or "https://subdomainfinder.c99.nl/" in url
+            or "https://api.c99.nl/" in url
+            or "/cdn-cgi/" in url
+        ):
+            continue
+        else:
+            final.append(url)
+
+    subs = list(
+        set(
+            (
+                string[2:].replace("/", "")
+                if string.startswith("//")
+                else string.replace("/", "")
+            )
+            for string in final
+        )
+    )
+
+    return subs
 
 
 def main():
@@ -305,7 +400,7 @@ def main():
     console.print(
         f"\t[white bold]*[/white bold] [green bold]Setting the latest Timeline: [/green bold][yellow bold]https:{top_t3n[0]}[/yellow bold]"
     )
-    url = "https:" + top_t3n[0]
+    url = "https://" + top_t3n[0]
     s = requests.Session()
     s.headers.update(
         {"user-agent": f"{ua}", "Accept-Encoding": "*", "Connection": "keep-alive"}
