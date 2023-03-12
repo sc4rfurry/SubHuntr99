@@ -13,12 +13,14 @@ Hunting Sub-Domain(s) by scraping *subdomainfinder.c99.nl*.
   - [📚 Requirements](#-requirements)
   - [Installation](#installation)
     - [Usage](#usage)
+      - [Help Menu](#help-menu)
     - [Docker](#docker)
     - [Repo Info ](#repo-info-)
   - [Contributing](#contributing)
+  - [Todo](#todo)
+  - [Contributors](#contributors)
   - [License](#license)
   - [Feedback](#feedback)
-
 
 #
 
@@ -66,6 +68,12 @@ python3 -m pip install -r requirements.txt
 ```
 
 ## Usage
+```console
+1) python3 main.py -d example.com
+2) python3 main.py
+```
+
+### Help Menu
 
 ```bash
                         
@@ -123,16 +131,29 @@ docker run -it subhuntr99 -d example.com
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+#
+
+## Todo
+- [ ] Clean Up the Code.
+- [ ] Optimize the workflow.
+- [ ] More bugs to fix. :\XD
+
+
+#
+
 ## Contributors
 > Special thanks to the following people who have contributed to this project:
 - [@cosad3s](https://github.com/cosad3s)
 
 Please make sure to update tests as appropriate.
 
+
+#
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
+#
 ## Feedback
 
 If you have any feedback, please reach out to us at akalucifr@protonmail.ch
