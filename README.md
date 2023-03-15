@@ -69,8 +69,9 @@ python3 -m pip install -r requirements.txt
 
 ## Usage
 ```console
-1) python3 main.py -d example.com
-2) python3 main.py
+1) python3 main.py
+2) python3 main.py -d example.com
+3) python3 main.py -d example.com -u "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0"
 ```
 
 ### Help Menu
@@ -87,7 +88,7 @@ python3 -m pip install -r requirements.txt
     Sub Domian Finder --> subdomainfinder.c99.nl
         
         Author:     Sc4rfurry
-        version:    0.1
+        version:    0.2
         github:     https://github.com/sc4rfurry
     
 ================================================================================
@@ -101,6 +102,7 @@ options:
   -d DOMAIN     Domain
   -u USERAGENT  User-Agent
 ```
+</br>
 
 ## Docker
 </br>
@@ -134,7 +136,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 #
 
 ## Todo
-- [ ] Clean Up the Code.
+- [x] Clean Up the Code.
 - [ ] Optimize the workflow.
 - [ ] More bugs to fix. :\XD
 

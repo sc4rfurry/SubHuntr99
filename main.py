@@ -1,29 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
-from rich.console import Console
-from user_agent import generate_user_agent
-from time import sleep
-from os import getcwd, name as nm, path, makedirs
-from tld import get_tld
-from validators import domain as vdm
 import argparse
+from os import getcwd, makedirs
+from os import name as nm
+from os import path
+from random import choice
+from sys import exit
+from time import sleep
+import requests
+from bs4 import BeautifulSoup
 from bs4.dammit import EncodingDetector
 from requests_html import AsyncHTMLSession
-from sys import exit, stdout as __sdt__
+from rich.console import Console
+from tld import get_tld
 from urllib3.exceptions import InsecureRequestWarning
-from random import choice
-import requests
+from user_agent import generate_user_agent
+from validators import domain as vdm
 
 
-final = []
-platfprms = ["Windows", "Linux"]
-urls = []
+# Disable SSL Warnings
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-asession = AsyncHTMLSession()
-
 
 # Global Variables
+platfprms = ["Windows", "Linux"]
+urls = []
+asession = AsyncHTMLSession()
 console = Console()
 cwd = getcwd()
 get_os = str(nm)
@@ -67,8 +68,7 @@ else:
     UNDERLINE = bcolors.UNDERLINE
 
 
-
-
+# Banner
 def banner():
     banner = """
    _____       __    __  __            __       ____  ____ 
@@ -82,7 +82,7 @@ def banner():
     """
     _info = """
         [cyan bold]Author[/cyan bold]:     [green bold]Sc4rfurry[/green bold]
-        [cyan bold]version[/cyan bold]:    [green bold]0.1[/green bold]
+        [cyan bold]version[/cyan bold]:    [green bold]0.2[/green bold]
         [cyan bold]github[/cyan bold]:     [green bold]https://github.com/sc4rfurry[/green bold]
     """
     console.print(
@@ -93,6 +93,7 @@ def banner():
     console.print(f"[blue bold]=[/blue bold]" * 80 + "\n")
 
 
+# Check Internet Connection
 def check_internet_conn():
     try:
         host = "https://subdomainfinder.c99.nl"
@@ -134,6 +135,7 @@ def check_internet_conn():
         exit(1)
 
 
+# Validate Domain
 def validateDomain(domain):
     global vdom
     console.print(
@@ -161,6 +163,7 @@ def validateDomain(domain):
         exit(1)
 
 
+# I/O Function
 def ioFunc(domain, urls):
     global file_path
     folder_name = str(domain)
@@ -226,6 +229,7 @@ def ioFunc(domain, urls):
             exit(1)
 
 
+# Get Latest Link
 def getLatestResults(vdom):
     global top_t3n, final
     final = []
@@ -260,10 +264,6 @@ def getLatestResults(vdom):
     s.headers.update({"Sec-Fetch-Site": "same-origin"})
     s.headers.update({"Sec-Fetch-User": "?1"})
     s.headers.update({"Sec-GPC": "1"})
-
-    # for header in s.headers:
-    #     print(header, s.headers[header])
-
     r = s.get(url, verify=False, timeout=10, allow_redirects=False, proxies=None)
     soup = BeautifulSoup(r.text, "html5lib")
     for link in soup.find_all("a", href=True):
@@ -297,54 +297,7 @@ def getLatestResults(vdom):
     return top_t3n, final
 
 
-async def get_subs(vdom):
-    url = f"https://subdomainfinder.c99.nl/scans/2023-03-07/{vdom}"
-    r = await asession.get(
-        url,
-        headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
-        },
-        timeout=10,
-    )
-    return r.html.links
-
-
-def run_it(vdom):
-    global subs
-    subs = []
-    urls = asession.run(get_subs(vdom))
-    urls = list(urls[0])
-    for url in urls:
-        if (
-            "https:" in url
-            or "http:" in url
-            or "whois" in url
-            or "api.c99.nl" in url
-            or "/geoip" in url
-            or "overview" in url
-            or "subdomainfinder" in url
-            or "https://subdomainfinder.c99.nl/" in url
-            or "https://api.c99.nl/" in url
-            or "/cdn-cgi/" in url
-        ):
-            continue
-        else:
-            final.append(url)
-
-    subs = list(
-        set(
-            (
-                string[2:].replace("/", "")
-                if string.startswith("//")
-                else string.replace("/", "")
-            )
-            for string in final
-        )
-    )
-
-    return subs
-
-
+# Main Function
 def main():
     global sub_domains
     sub_domains = []
@@ -355,7 +308,6 @@ def main():
         "-u", type=str, required=False, dest="useragent", help="User-Agent"
     )
     args = parser.parse_args()
-
     banner()
     ua = ""
     if args.useragent:
@@ -388,7 +340,6 @@ def main():
         )
     domain = str(user_input)
     validateDomain(domain)
-
     getLatestResults(vdom)
     console.print(
         f"\t[white bold]*[/white bold] [green bold]Scraping the Scan Timeline[/green bold]"
@@ -444,7 +395,6 @@ def main():
                 f"      [pale_turquoise1 bold]  └───>[/pale_turquoise1 bold]\t[yellow bold]  {dom}[/yellow bold]"
             )
             sub_domains.append(dom)
-            # sleep(0.17)
         console.print(f"[blue bold]=[/blue bold]" * 80 + "\n")
         console.print(
             f"\t[white bold]*[/white bold] [green bold]Saving Sub-Domains...[/green bold]\n"
