@@ -7,3 +7,4 @@ tld
 validators
 argparse
 requests_html
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
